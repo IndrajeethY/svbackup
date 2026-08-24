@@ -1,0 +1,10 @@
+[Unit]
+Description=svbackup — pull server files + databases to PC and Google Drive
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/svbackup/svbackup --once --config %h/svbackup/config.yaml
+Nice=10
+IOSchedulingClass=idle

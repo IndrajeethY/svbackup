@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly svbackup run (with catch-up if PC was off)
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

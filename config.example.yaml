@@ -1,0 +1,53 @@
+settings:
+  data_dir: ~/svbackup/data
+  # require_mount: /media/you/BACKUPS  # if set, this path must be a mounted fs or the run aborts (never writes to root disk)
+  log_dir: ~/svbackup/logs
+  rclone_remote: gdrive          # name of the rclone remote (rclone config)
+  rclone_base_path: svbackup     # folder inside Google Drive
+  retention:
+    daily: 7
+    weekly: 4
+  concurrency: 2                 # servers backed up in parallel
+  rsync_extra: ["-z", "--partial"]
+
+servers:
+  - name: example-key-server
+    enabled: true
+    host: 10.0.0.1
+    user: debian
+    port: 22
+    auth:
+      type: key
+      key_path: ~/.ssh/id_ed25519
+    paths:
+      - /var/www/myproject
+    exclude: ["cache/**", "logs/**", "*.jar"]
+    databases:
+      # Containerized Postgres — dumped via `docker exec <container> pg_dump`.
+      - name: myapp-db
+        engine: postgres
+        container: myapp-postgres
+        db: myapp
+        user: myapp
+        password: "CHANGE_ME"
+      # Host-native Postgres — omit `container`.
+      # - name: other-db
+      #   engine: postgres
+      #   db: other
+      #   user: postgres
+      #   password: "CHANGE_ME"
+      #   host: 127.0.0.1
+      #   port: 5432
+
+  - name: example-password-server
+    enabled: false
+    host: 10.0.0.2
+    user: root
+    port: 22
+    auth:
+      type: password
+      password: "CHANGE_ME"       # requires sshpass installed locally
+    paths:
+      - /root/data
+    exclude: []
+    databases: []
